@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Auth\ApiLoginRequest;
+use App\Http\Requests\Auth\ApiRegisterRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -10,19 +12,13 @@ use Illuminate\Support\Facades\Hash;
 class AuthController extends Controller
 {
     /**
-     * Maneja el login de usuario y genera un token de acceso personal.
+     * Manages user registration.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function register(Request $request)
+    public function register(ApiRegisterRequest $request)
     {
-        $request->validate([
-            'name' => 'required',
-            'email' => 'required|email',
-            'password' => 'required',
-        ]);
-
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
@@ -30,37 +26,32 @@ class AuthController extends Controller
         ]);
 
         return response()->json([
-            'message' => 'El usuario se ha creado',
+            'message' => 'The user has been created',
             'token' => $user->createToken("token")->plainTextToken
         ], 200);
     }
 
     /**
-     * Maneja el login de usuario y genera un token de acceso personal.
+     * Manages user logins and generates a personal token.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function login(Request $request)
+    public function login(ApiLoginRequest $request)
     {
-        $request->validate([
-            'email' => 'required|email',
-            'password' => 'required',
-        ]);
-
         $user = User::where('email', $request->email)->first();
 
         if (! $user || ! Hash::check($request->password, $user->password)) {
-            return response()->json(['message' => 'Credenciales inválidas'], 401);
+            return response()->json(['message' => 'Invalid credentials'], 401);
         }
 
         $token = $user->createToken("token")->plainTextToken;
 
-        return response()->json(['token' => $token, 'user' => $user, 'token_type' => 'Bearer']);
+        return response()->json(['token' => $token, 'user' => $user,]);
     }
 
     /**
-     * Cierra la sesión del usuario revocando el token actual.
+     * Log the user out by revoking the current token.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\JsonResponse
@@ -74,7 +65,7 @@ class AuthController extends Controller
     }
 
     /**
-     * Devuelve los datos del usuario autenticado.
+     * Returns the authenticated user's data.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\JsonResponse
