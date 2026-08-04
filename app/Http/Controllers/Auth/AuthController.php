@@ -63,16 +63,4 @@ class AuthController extends Controller
 
         return response()->json(['message' => 'Sesión cerrada correctamente.']);
     }
-
-    /**
-     * Returns the authenticated user's data.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function user(Request $request)
-    {
-        // Devolver los datos del usuario autenticado por Sanctum
-        return response()->json($request->user());
-    }
 }
