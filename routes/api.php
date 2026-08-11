@@ -1,10 +1,10 @@
 <?php
 
-use App\Http\Controllers\Auth\AuthController;
-use App\Http\Controllers\Post\PostController;
-use App\Http\Controllers\Role\PermissionController;
-use App\Http\Controllers\Role\RoleController;
-use App\Http\Controllers\User\UserController;
+use App\Http\Controllers\Api\Auth\AuthController;
+use App\Http\Controllers\Api\Post\PostController;
+use App\Http\Controllers\Api\Role\PermissionController;
+use App\Http\Controllers\Api\Role\RoleController;
+use App\Http\Controllers\Api\User\UserController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['api.key', 'throttle:60,1'])->group(function () {
@@ -63,11 +63,8 @@ Route::middleware(['api.key', 'throttle:60,1'])->group(function () {
         |--------------------------------------------------------------------------
         */
 
-        Route::prefix('users')->group(function () {
-
-            Route::get('/me', [UserController::class, 'me']);
-            Route::put('/me', [UserController::class, 'updateMe']);
-        });
+        Route::get('/me', [UserController::class, 'me']);
+        Route::put('/me', [UserController::class, 'updateMe']);
 
         /*
         |--------------------------------------------------------------------------

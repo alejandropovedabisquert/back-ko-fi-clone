@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Enums\AccountType;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Database\Seeder;
@@ -15,10 +16,10 @@ class AdminUserSeeder extends Seeder
 
         $user = User::updateOrCreate(
             [
-                'email' => 'admin@email.com'
-            ],
-            [
+                'email' => 'admin@email.com',
                 'name' => 'Administrador',
+                'slug' => 'administrador',
+                'account_type' => AccountType::USER,
                 'password' => Hash::make('admin123'),
             ]
         );
