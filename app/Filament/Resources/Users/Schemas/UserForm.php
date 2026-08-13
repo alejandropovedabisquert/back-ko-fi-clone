@@ -2,7 +2,9 @@
 
 namespace App\Filament\Resources\Users\Schemas;
 
+use App\Models\User;
 use App\Models\Role;
+use Filament\Facades\Filament;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -30,6 +32,7 @@ class UserForm
                     ->relationship('roles', 'display_name')
                     ->multiple()
                     ->preload()
+                    ->visible(fn () => Filament::auth()->user()?->hasRole('admin'))
                     ->searchable(),
                 Select::make('account_type')
                     ->label('Account type')

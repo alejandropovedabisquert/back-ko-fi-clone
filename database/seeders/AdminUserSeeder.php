@@ -14,7 +14,7 @@ class AdminUserSeeder extends Seeder
     {
         $adminRole = Role::where('name', 'admin')->firstOrFail();
 
-        $user = User::updateOrCreate(
+        $admin = User::updateOrCreate(
             [
                 'email' => 'admin@email.com',
                 'name' => 'Administrador',
@@ -23,9 +23,23 @@ class AdminUserSeeder extends Seeder
                 'password' => Hash::make('admin123'),
             ]
         );
+        $moderatorRole = Role::where('name', 'moderator')->firstOrFail();
 
-        $user->roles()->syncWithoutDetaching([
+        $moderator = User::updateOrCreate(
+            [
+                'email' => 'mod@email.com',
+                'name' => 'Moderator',
+                'slug' => 'moderator',
+                'account_type' => AccountType::USER,
+                'password' => Hash::make('mod123'),
+            ]
+        );
+
+        $admin->roles()->syncWithoutDetaching([
             $adminRole->id
+        ]);
+        $moderator->roles()->syncWithoutDetaching([
+            $moderatorRole->id
         ]);
     }
 }

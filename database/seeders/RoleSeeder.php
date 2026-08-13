@@ -20,29 +20,32 @@ class RoleSeeder extends Seeder
             ]
         );
 
-        // $editor = Role::updateOrCreate(
-        //     ['name' => 'editor'],
-        //     [
-        //         'display_name' => 'Editor',
-        //         'description' => 'Editor de contenido',
-        //         'active' => true,
-        //         'system' => true,
-        //     ]
-        // );
+        $moderator = Role::updateOrCreate(
+            ['name' => 'moderator'],
+            [
+                'display_name' => 'Moderator',
+                'description' => 'Moderador del sitio',
+                'active' => true,
+                'system' => true,
+            ]
+        );
 
         // Admin => todos los permisos
         $admin->permissions()->sync(
             Permission::pluck('id')
         );
 
-        // // Editor
-        // $editor->permissions()->sync(
-        //     Permission::whereIn('name', [
-        //         'posts.view',
-        //         'posts.create',
-        //         'posts.update',
-        //         'posts.publish',
-        //     ])->pluck('id')
-        // );
+        $moderator->permissions()->sync(
+            Permission::whereIn('name', [
+                'posts.view',
+                'posts.create',
+                'posts.update',
+                'posts.publish',
+                'users.view',
+                'users.create',
+                'users.update',
+                'users.delete',
+            ])->pluck('id')
+        );
     }
 }
