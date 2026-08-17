@@ -2,27 +2,26 @@
 
 namespace Database\Factories;
 
+use App\Enums\PostType;
 use App\Models\Post;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
-/**
- * @extends Factory<Post>
- */
 class PostFactory extends Factory
 {
     protected $model = Post::class;
 
     public function definition(): array
     {
-        $title = fake()->sentence(6);
+        $title = fake()->sentence(4);
 
         return [
             'user_id' => User::factory(),
             'title' => $title,
-            'content' => fake()->paragraphs(4, true),
+            'content' => fake()->paragraphs(3, true),
             'slug' => Str::slug($title) . '-' . fake()->unique()->numberBetween(1, 999999),
+            'type' => PostType::TEXT,
             'status' => 'draft',
             'published_at' => null,
         ];
@@ -30,29 +29,44 @@ class PostFactory extends Factory
 
     public function published(): static
     {
-        return $this->state(function (array $attributes) {
-            return [
-                'status' => 'published',
-                'published_at' => fake()->dateTimeBetween('-1 year', 'now'),
-            ];
-        });
+        return $this->state(fn () => [
+            'status' => 'published',
+            'published_at' => now(),
+        ]);
     }
 
-    public function archived(): static
+    public function text(): static
     {
-        return $this->state(function (array $attributes) {
-            return [
-                'status' => 'archived',
-                'published_at' => fake()->dateTimeBetween('-1 year', 'now'),
-            ];
-        });
+        return $this->state(fn () => [
+            'type' => PostType::TEXT,
+        ]);
     }
 
-    public function draft(): static
+    public function blog(): static
     {
-        return $this->state([
-            'status' => 'draft',
-            'published_at' => null,
+        return $this->state(fn () => [
+            'type' => PostType::BLOG,
+        ]);
+    }
+
+    public function image(): static
+    {
+        return $this->state(fn () => [
+            'type' => PostType::IMAGE,
+        ]);
+    }
+
+    public function video(): static
+    {
+        return $this->state(fn () => [
+            'type' => PostType::VIDEO,
+        ]);
+    }
+
+    public function poll(): static
+    {
+        return $this->state(fn () => [
+            'type' => PostType::POLL,
         ]);
     }
 }

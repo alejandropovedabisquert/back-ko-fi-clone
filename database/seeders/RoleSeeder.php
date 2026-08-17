@@ -14,7 +14,7 @@ class RoleSeeder extends Seeder
             ['name' => 'admin'],
             [
                 'display_name' => 'Administrador',
-                'description' => 'Acceso completo',
+                'description' => 'Full access',
                 'active' => true,
                 'system' => true,
             ]
@@ -24,7 +24,7 @@ class RoleSeeder extends Seeder
             ['name' => 'moderator'],
             [
                 'display_name' => 'Moderator',
-                'description' => 'Moderador del sitio',
+                'description' => 'Site moderator',
                 'active' => true,
                 'system' => true,
             ]

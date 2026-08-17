@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\Enums\PostStatus;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -18,16 +19,15 @@ return new class extends Migration
                 ->constrained()
                 ->cascadeOnDelete();
 
+            $table->string('type')->default('text');
+
             $table->string('title', 255);
-            $table->text('content');
+
+            $table->text('content')->nullable();
 
             $table->string('slug')->unique()->nullable();
 
-            $table->enum('status', [
-                'draft',
-                'published',
-                'archived'
-            ])->default('draft');
+            $table->string('status')->default('draft');
 
             $table->timestamp('published_at')->nullable();
 
@@ -36,6 +36,7 @@ return new class extends Migration
 
             $table->index('status');
             $table->index('published_at');
+            $table->index('type');
         });
     }
 
