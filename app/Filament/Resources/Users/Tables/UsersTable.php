@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Users\Tables;
 
+use App\Enums\AccountType;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
@@ -24,9 +25,14 @@ class UsersTable
                     ->label('Slug'),
                 TextColumn::make('roles.display_name')
                     ->label('Administrative roles')
+                    ->getStateUsing(
+                        fn($record) => $record->roles
+                    )
                     ->badge(),
                 TextColumn::make('account_type')
                     ->label('Account type')
+                    ->formatStateUsing(fn(AccountType $state) => $state->label())
+                    ->color(fn(AccountType $state) => $state->color())
                     ->badge(),
                 TextColumn::make('email_verified_at')
                     ->dateTime()

@@ -19,6 +19,8 @@ class PermissionsTable
                     ->searchable(),
                 TextColumn::make('display_name')
                     ->searchable(),
+                TextColumn::make('description')
+                    ->placeholder('-'),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
