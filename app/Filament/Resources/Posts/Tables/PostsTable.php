@@ -12,6 +12,7 @@ use Filament\Actions\RestoreBulkAction;
 use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
 
@@ -28,8 +29,8 @@ class PostsTable
 
                 TextColumn::make('type')
                     ->badge()
-                    ->formatStateUsing(fn (PostType $state) => $state->label())
-                    ->color(fn (PostType $state) => $state->color()),
+                    ->formatStateUsing(fn(PostType $state) => $state->label())
+                    ->color(fn(PostType $state) => $state->color()),
 
                 TextColumn::make('title')
                     ->searchable()
@@ -37,8 +38,8 @@ class PostsTable
 
                 TextColumn::make('status')
                     ->badge()
-                    ->formatStateUsing(fn (PostStatus $state) => $state->label())
-                    ->color(fn (PostStatus $state) => $state->color()),
+                    ->formatStateUsing(fn(PostStatus $state) => $state->label())
+                    ->color(fn(PostStatus $state) => $state->color()),
 
                 TextColumn::make('media_count')
                     ->counts('media')
@@ -71,7 +72,10 @@ class PostsTable
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                TrashedFilter::make(),
+                SelectFilter::make('type')
+                    ->options(PostType::options()),
+                SelectFilter::make('status')
+                    ->options(PostStatus::options())
             ])
             ->recordActions([
                 ViewAction::make(),

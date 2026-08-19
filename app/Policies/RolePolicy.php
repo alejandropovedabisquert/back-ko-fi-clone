@@ -19,11 +19,11 @@ class RolePolicy
 
     public function update(User $user, Role $role): bool
     {
-        return $user->hasPermission('roles.update');
+        return $user->hasPermission('roles.update') && ! $role->system;
     }
 
     public function delete(User $user, Role $role): bool
     {
-        return $user->hasPermission('roles.delete');
+        return $user->hasPermission('roles.delete') && ! $role->system;
     }
 }
