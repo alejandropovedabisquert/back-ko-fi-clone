@@ -28,6 +28,7 @@ class UsersTable
                     ->getStateUsing(
                         fn($record) => $record->roles
                     )
+                    ->placeholder('-')
                     ->badge(),
                 TextColumn::make('account_type')
                     ->label('Account type')
@@ -36,6 +37,7 @@ class UsersTable
                     ->badge(),
                 TextColumn::make('email_verified_at')
                     ->dateTime()
+                    ->placeholder('-')
                     ->sortable(),
                 TextColumn::make('created_at')
                     ->dateTime()

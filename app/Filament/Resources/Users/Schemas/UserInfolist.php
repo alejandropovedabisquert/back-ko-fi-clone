@@ -16,6 +16,11 @@ class UserInfolist
                 Section::make('User details')
                     ->schema([
                         TextEntry::make('name'),
+                        TextEntry::make('account_type')
+                            ->label('Account type')
+                            ->formatStateUsing(fn(AccountType $state) => $state->label())
+                            ->color(fn(AccountType $state) => $state->color())
+                            ->badge(),
                         TextEntry::make('email')
                             ->label('Email address'),
                         TextEntry::make('slug')
@@ -27,11 +32,6 @@ class UserInfolist
                                 fn($record) => $record->roles
                             )
                             ->placeholder('-')
-                            ->badge(),
-                        TextEntry::make('account_type')
-                            ->label('Account type')
-                            ->formatStateUsing(fn(AccountType $state) => $state->label())
-                            ->color(fn(AccountType $state) => $state->color())
                             ->badge(),
                         TextEntry::make('email_verified_at')
                             ->dateTime()

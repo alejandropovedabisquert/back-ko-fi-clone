@@ -49,12 +49,16 @@ class User extends Authenticatable implements FilamentUser
 
     public function hasRole(string $role): bool
     {
-        return $this->roles()->where('name', $role)->exists();
+        return $this->roles()
+            ->where('name', $role)
+            ->where('active', true)
+            ->exists();
     }
 
     public function hasPermission(string $permission): bool
     {
         return $this->roles()
+            ->where('active', true)
             ->whereHas('permissions', function ($query) use ($permission) {
                 $query->where('name', $permission);
             })

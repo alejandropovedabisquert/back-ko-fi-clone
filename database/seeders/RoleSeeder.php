@@ -37,6 +37,7 @@ class RoleSeeder extends Seeder
 
         $moderator->permissions()->sync(
             Permission::whereIn('name', [
+                'panel.access',
                 'posts.view',
                 'posts.create',
                 'posts.update',
