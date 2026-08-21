@@ -25,7 +25,7 @@ return new class extends Migration
 
             $table->text('content')->nullable();
 
-            $table->string('slug')->unique()->nullable();
+            $table->string('slug')->unique();
 
             $table->string('status')->default('draft');
 

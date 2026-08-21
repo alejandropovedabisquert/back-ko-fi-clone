@@ -46,7 +46,7 @@ Route::middleware(['api.key', 'throttle:60,1'])->group(function () {
     */
 
     Route::prefix('users')->group(function () {
-        Route::get('/{slug}', [UserController::class, 'getUserBySlug']);
+        Route::get('/{user:slug}', [UserController::class, 'getUserBySlug']);
     });
 
     /*
@@ -79,57 +79,6 @@ Route::middleware(['api.key', 'throttle:60,1'])->group(function () {
             Route::delete('/{post}', [PostController::class, 'destroy']);
 
             Route::get('/me/list', [PostController::class, 'myPosts']);
-        });
-
-        /*
-        |--------------------------------------------------------------------------
-        | ADMIN
-        |--------------------------------------------------------------------------
-        */
-
-        Route::middleware('role:admin')->group(function () {
-
-            /*
-            |--------------------------------------------------------------------------
-            | USERS
-            |--------------------------------------------------------------------------
-            */
-
-            Route::prefix('users')->group(function () {
-
-                Route::get('/', [UserController::class, 'index']);
-                Route::put('/{user}', [UserController::class, 'update']);
-                Route::delete('/{user}', [UserController::class, 'destroy']);
-            });
-
-            /*
-            |--------------------------------------------------------------------------
-            | ROLES
-            |--------------------------------------------------------------------------
-            */
-
-            Route::apiResource('roles', RoleController::class);
-
-            /*
-            |--------------------------------------------------------------------------
-            | ROLE MANAGEMENT
-            |--------------------------------------------------------------------------
-            */
-
-            Route::post('/roles/{role}/permissions', [RoleController::class, 'syncPermissions']);
-
-            Route::post('/users/{user}/roles', [UserController::class, 'syncRoles']);
-
-            /*
-            |--------------------------------------------------------------------------
-            | PERMISSION MANAGEMENT
-            |--------------------------------------------------------------------------
-            */
-            Route::apiResource('permissions', PermissionController::class)
-                ->only([
-                    'index',
-                    'show'
-                ]);
         });
     });
 });

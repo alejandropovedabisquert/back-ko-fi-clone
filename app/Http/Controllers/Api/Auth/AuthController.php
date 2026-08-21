@@ -5,9 +5,11 @@ namespace App\Http\Controllers\Api\Auth;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\ApiLoginRequest;
 use App\Http\Requests\Auth\ApiRegisterRequest;
+use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 class AuthController extends Controller
 {
@@ -19,16 +21,31 @@ class AuthController extends Controller
      */
     public function register(ApiRegisterRequest $request)
     {
+        $slug = $request->slug ?: Str::slug($request->name);
+
+        if (empty($slug)) {
+            return response()->json([
+                'message' => 'Unable to generate a valid slug from the name.',
+            ], 422);
+        }
+
+        $baseSlug = $slug;
+
+        while (User::where('slug', $slug)->exists()) {
+            $slug = $baseSlug . '-' . Str::lower(Str::random(6));
+        }
+
         $user = User::create([
             'name' => $request->name,
+            'slug' => $slug,
             'email' => $request->email,
-            'password' => Hash::make($request->password)
+            'password' => Hash::make($request->password),
         ]);
 
         return response()->json([
             'message' => 'The user has been created',
-            'token' => $user->createToken("token")->plainTextToken
-        ], 200);
+            'token' => $user->createToken('token')->plainTextToken,
+        ], 201);
     }
 
     /**
@@ -42,12 +59,17 @@ class AuthController extends Controller
         $user = User::where('email', $request->email)->first();
 
         if (! $user || ! Hash::check($request->password, $user->password)) {
-            return response()->json(['message' => 'Invalid credentials'], 401);
+            return response()->json([
+                'message' => 'Invalid credentials',
+            ], 401);
         }
 
-        $token = $user->createToken("token")->plainTextToken;
+        $token = $user->createToken('token')->plainTextToken;
 
-        return response()->json(['token' => $token, 'user' => $user,]);
+        return response()->json([
+            'token' => $token,
+            'user' => new UserResource($user),
+        ]);
     }
 
     /**

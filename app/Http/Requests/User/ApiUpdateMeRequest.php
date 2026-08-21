@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Http\Requests\Auth;
+namespace App\Http\Requests\User;
 
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Password;
 
-class ApiRegisterRequest extends FormRequest
+class ApiUpdateMeRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,31 +25,34 @@ class ApiRegisterRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required', 'string', 'max:255'],
+            "name" => ["sometimes", "string", "max:255"],
+            'slug' => [
+                "sometimes",
+                'string',
+                'min:3',
+                'max:50',
+                'alpha_dash',
+                Rule::unique('users', 'slug')
+                    ->ignore($this->user()->id),
+                'not_in:admin,api,login,register,users,user,settings,dashboard'
+            ],
             'email' => [
-                'required',
+                'sometimes',
                 'email',
                 'max:255',
                 Rule::unique('users', 'email')
+                    ->ignore($this->user()->id),
             ],
-            'password' => [
-                'required',
-                'string',
+            "password" => [
+                "sometimes",
+                "string",
+                "confirmed",
                 Password::min(12)
                     ->letters()
                     ->mixedCase()
                     ->numbers()
                     ->symbols()
-                    ->uncompromised(),
-            ],
-            'slug' => [
-                'nullable',
-                'string',
-                'min:3',
-                'max:50',
-                'alpha_dash',
-                Rule::unique('users', 'slug'),
-                'not_in:admin,api,login,register,users,user,settings,dashboard',
+                    ->uncompromised()
             ],
         ];
     }

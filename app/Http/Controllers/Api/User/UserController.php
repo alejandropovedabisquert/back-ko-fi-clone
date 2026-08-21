@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Api\User;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Requests\User\ApiUpdateMeRequest;
-use App\Http\Requests\Requests\User\ApiUpdateRequest;
+use App\Http\Requests\User\ApiUpdateMeRequest;
+use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -19,7 +19,7 @@ class UserController extends Controller
     public function me(Request $request)
     {
         // Devolver los datos del usuario autenticado por Sanctum
-        return response()->json([$request->user()], 200);
+        return new UserResource($request->user());
     }
 
     /**
@@ -40,38 +40,14 @@ class UserController extends Controller
     }
 
     /**
-     * Updates the authenticated user's data.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function update(ApiUpdateRequest $request, User $user)
-    {
-        if ($request->user()->id === $user->id) {
-            return response()->json(['message' => 'You cannot update yourself with this route.'], 403);
-        }
-
-        $user->fill($request->validated());
-
-        $user->save();
-
-        return response()->json(['message' => 'User updated successfully', 'user' => $user], 200);
-    }
-
-    /**
      * Gets a user's data.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function getUserBySlug(Request $request)
+    public function getUserBySlug(User $user)
     {
-        $user = User::where('slug', $request->slug)->first();
-
-        if (!$user) {
-            return response()->json(['message' => 'User not found'], 404);
-        }
-
-        return response()->json(['message' => 'User retrieved successfully', 'user' => $user], 200);
+        return response()->json([
+            'user' => new UserResource($user),
+        ]);
     }
 }
